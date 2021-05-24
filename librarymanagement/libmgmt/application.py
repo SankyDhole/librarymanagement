@@ -12,18 +12,11 @@ import json
 @app.route('/createbook', methods=['GET', 'POST'])
 def create_book():
     form = addBook()
-    print(form.errors)
     if form.validate():
         print("valid")
-    print(form.errors)
     book_state = form.entryselect.data
-    print(book_state)
     checkbook = BookInfo.query.filter_by(book_name=form.entrybook.data).first()
-    print(checkbook)
     if book_state == "C":
-        print(form.entrybook.data)
-        print(form.entryauthor.data)
-        print(form.entrystock.data)
         if checkbook:
             print("Failure")
             return render_template("book.html", msgex="Book Already Exist", form=form)
@@ -74,14 +67,12 @@ def create_book():
 
 @app.route('/createuser', methods=['GET', 'POST'])
 def create_member():
-    # import pdb; pdb.set_trace()
     form = addUser()
     member_state = form.addselect.data
     checkmember = MemberInfo.query.filter_by(username=form.addname.data).first()
     print(checkmember)
     if member_state == "C":
         if checkmember:
-            print(checkmember.username)
             # User exist
             return render_template("member.html", msgex="User Already Exist", form=form)
         else:
@@ -124,9 +115,7 @@ def create_member():
 
 @app.route('/searcho', methods=['GET','POST'])
 def search():
-    print ("in search")
     if request.method == "POST":
-        print("posted")
         searchdata = request.form.get('search')
         booksearch = BookInfo.query.filter_by(book_name=searchdata).first()
         sendbook = {"Book name": booksearch.book_name, "Book Author": booksearch.book_author,
@@ -141,7 +130,6 @@ def search():
                 print("Author found")
                 return render_template("report.html", searchop=authorsearch)
             else:
-                print("Nothing")
                 return render_template("report.html", searchin="Invalid search")
     else:
         return render_template("report.html")
@@ -150,7 +138,6 @@ def search():
 @app.route('/repular', methods=['GET','POST'])
 def pular():
     if request.method == 'POST':
-        print("posted")
         popname = BookInfo.query.order_by(BookInfo.book_borrow).first()
         sendpop = {"Book Name": popname.book_name, "Author name": popname.book_author,
                        "Total Quantity": popname.book_total, "Current Stock": popname.book_stock}
@@ -162,7 +149,6 @@ def pular():
 @app.route('/repayer', methods=['GET','POST'])
 def payer():
     if request.method == 'POST':
-        print ("repayed")
         payname = MemberInfo.query.order_by(MemberInfo.charges_pending).first()
         if payname:
             sendpay = {"Book name": payname.username, "Pending charges": payname.charges_pending}
@@ -177,7 +163,6 @@ def borrowbook():
     form = borrowForm()
     print(form.bookname.data)
     user_action = form.selectaction.data
-    print(user_action)
     if user_action == "B":
         checkaction = BookInfo.query.filter_by(book_name=form.bookname.data).first()
         if checkaction:
@@ -185,11 +170,9 @@ def borrowbook():
                 # book available
                 checkaction.book_stock = checkaction.book_stock - 1
                 borrower = MemberInfo.query.filter_by(username=form.membername.data).first()
-                print("bk", borrower.borrow_book)
                 x = (len(borrower.borrow_book))
                 w = borrower.borrow_book
                 w[x+1] = form.bookname.data
-                print(w)
                 print("book", borrower.borrow_book)
                 borrower.borrow_book = w
                 addtrans = Transaction(book_name=form.bookname.data, borrow_date=date.today(),
@@ -202,8 +185,7 @@ def borrowbook():
                                                   return_date=None).first()
         retdata = BookInfo.query.filter_by(book_name=form.bookname.data).first()
         pend = MemberInfo.query.filter_by(username=form.membername.data).first()
-        print(checkaction)
-        print(retdata)
+        
         if checkaction:
             if retdata:
                 checkaction.return_date = date.today()
@@ -216,10 +198,8 @@ def borrowbook():
     print(form.bookname.data)
     print(form.errors)
     if form.validate():
-        print("valid")
-    print(form.errors)
+        print ("Valid")
     if form.validate_on_submit() == False:
-        print("i")
         return render_template('home.html', form=form)
     return redirect('/')
 
@@ -229,7 +209,6 @@ def transactrep():
     if request.method == "POST":
         start_date = request.form.get('startdate')
         end_date = request.form.get('enddate')
-        print ("Done")
         report_data = Transaction.query.filter(Transaction.borrow_date.between(start_date,end_date)).all()
         print(type(report_data))
         for da in report_data:
