@@ -93,8 +93,10 @@ def create_member():
     if member_state == "U":
         if checkmember:
             print("Updated")
-            checkmember.username = form.updatename.data
-            checkmember.charges_pending = form.addcharge.data
+            if form.updatename.data:
+                checkmember.username = form.updatename.data
+            if form.addcharge.data:
+                checkmember.charges_pending = form.addcharge.data
             db.session.commit()
             return render_template("member.html", update="Updated Successfully", form=form)
         else:
@@ -149,7 +151,7 @@ def pular():
 @app.route('/repayer', methods=['GET','POST'])
 def payer():
     if request.method == 'POST':
-        payname = MemberInfo.query.order_by(MemberInfo.charges_pending).first()
+        payname = MemberInfo.query.order_by(MemberInfo.charges_pending.desc()).first()
         if payname:
             sendpay = {"Book name": payname.username, "Pending charges": payname.charges_pending}
             return render_template("report.html", msg=sendpay)
@@ -170,16 +172,24 @@ def borrowbook():
                 # book available
                 checkaction.book_stock = checkaction.book_stock - 1
                 borrower = MemberInfo.query.filter_by(username=form.membername.data).first()
-                x = (len(borrower.borrow_book))
-                w = borrower.borrow_book
-                w[x+1] = form.bookname.data
-                print("book", borrower.borrow_book)
-                borrower.borrow_book = w
-                addtrans = Transaction(book_name=form.bookname.data, borrow_date=date.today(),
-                                       member_name=form.membername.data, charges=0)
-                db.session.add(addtrans)
-                db.session.commit()
-                return render_template("home.html", brow="Book assigned to User", form=form)
+                if borrower:
+                    if borrower.charges_pending > 500:
+                        return render_template("home.html", brow="Charges pending above limit", form=form)
+                    else:
+                        print("bk", borrower.borrow_book)
+                        x = (len(borrower.borrow_book))
+                        w = borrower.borrow_book
+                        w[x + 1] = form.bookname.data
+                        print(w)
+                        print("book", borrower.borrow_book)
+                        borrower.borrow_book = w
+                        addtrans = Transaction(book_name=form.bookname.data, borrow_date=date.today(),
+                                               member_name=form.membername.data, charges=0)
+                        db.session.add(addtrans)
+                        db.session.commit()
+                        return render_template("home.html", brow="Book assigned to User", form=form)
+                else:
+                    return render_template("home.html", form=form)
     if user_action == "R":
         checkaction = Transaction.query.filter_by(book_name=form.bookname.data, member_name=form.membername.data,
                                                   return_date=None).first()
