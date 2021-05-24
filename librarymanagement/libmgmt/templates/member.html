@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<style>
+.member p{
+   padding: 12px 20px;
+  margin: 10px 20px;
+  box-sizing: border-box;
+}
+
+.instruction {
+position: absolute;
+  bottom: 8px;
+  left: 16px;
+}
+
+</style>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="createuser" method="post" class="member">
+        {{form.hidden_tag()}}
+    <p>{{ form.addname.label }} : {{ form.addname }}</p>
+    <p>{{ form.updatename.label }} : {{ form.updatename }}</p>
+    <p>{{form.addbook.label}} : {{form.addbook}}</p>
+    <p>{{form.addcharge.label}} : {{form.addcharge}}</p>
+        <p>{{form.addselect.label}} : {{form.addselect}}</p>
+        <p>{{ form.addsubmit }}</p>
+    </form>
+<h1>{% for key in msg %}
+    <p>{{key}} : {{msg[key]}}</p>
+    {% endfor %}
+</h1>
+<p>{{msgex}}</p>
+<p>{{invalidread}}</p>
+<p>{{update}}</p>
+<p>{{delete}}</p>
+<p class="instruction">* Create New User - Enter Member Name to create new user<br>
+* Display User Info - Enter Member Name to display user data<br>
+* Update User Info - Enter Member name and columns to be updated in form<br>
+* Delete User Info - Enter Member name to delete User from system</p>
+{% endblock %}
+</body>
+</html>

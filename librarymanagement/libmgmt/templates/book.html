@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+.bookform p{
+  padding: 12px 20px;
+  margin: 10px 20px;
+  box-sizing: border-box;
+}
+.instruction {
+position: absolute;
+  bottom: 8px;
+  left: 16px;
+}
+
+</style>
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="http://localhost:5000/createbook" method="post" class="bookform">
+        <p>{{ form.entrybook.label }} : {{ form.entrybook }}</p>
+        <p>{{ form.entryupdate.label }} : {{ form.entryupdate }}</p>
+        <p>{{form.entryauthor.label}} : {{form.entryauthor}}</p>
+    <p>{{form.entrystock.label}} : {{form.entrystock}}</p>
+    <p>{{form.entryselect.label}} : {{form.entryselect}}</p>
+        <p>{{ form.entrysubmit }}</p></form>
+{% endblock %}
+
+<h1>{% for key in msg %}
+    <p>{{key}} : {{msg[key]}}</p>
+    {% endfor %}
+</h1>
+
+<p>{{msgex}}</p>
+<p>{{invalidread}}</p>
+<p>{{update}}</p>
+<p>{{delete}}</p>
+<p class="instruction">
+    * Create New Entry - Enter Book Name, Author Name and available stock.<br>
+    * Read Book details - Enter Book Name<br>
+    * Update Book details - Enter Book Name and details to be updated<br>
+    * Delete Book details - Enter book Name to delete record
+
+</p>
+</body>
+</html>

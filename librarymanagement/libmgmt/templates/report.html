@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+.search {
+  padding: 6px;
+  border: groove;
+  margin-top: 8px;
+  margin-left: 16px;
+  margin-bottom: 20px;
+  font-size: 17px;
+
+}
+
+input[type=date]{
+    width: 40%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+.dater {
+margin : 20px 500px;
+text-align: center;
+   height: 30px;
+  width: 100px;
+  background-color: powderblue;
+}
+.pay {
+
+text-align: center;
+   height: 30px;
+  width: 100px;
+}
+
+.pop {
+
+text-align: center;
+   height: 30px;
+  width: 100px;
+}
+
+label {
+margin: 0px 40px;
+}
+
+table {
+margin-top: 30px;
+margin-bottom: 30px
+}
+
+.transreport {
+    text-align:center;
+    margin-top:10px;
+}
+
+p {
+    width: 50%;
+    margin-left: 20px;
+    border-left: 6px solid red;
+    background-color: lightgrey;
+}
+
+
+</style>
+
+{% extends 'base.html' %}
+{% block content %}
+<table style="width:50%">
+    <tr>
+<th><form action="searcho" method="post">
+    <input type="text" placeholder="Search.." name="search" class="search">
+    <button type="submit">GO</button></form></th>
+<th><form action="repular" method="post">
+    <button type="submit" name="popular" class="pop">Popular book</button></form></th>
+<th><form action="repayer" method="post">
+    <button type="submit" name="payer" class="pay">Highest Payer</button></form></th>
+</tr>
+</table>
+
+<label class="trans"><h3>Transaction report</h3></label>
+    <form action="report" method="post">
+<label for="startdate">Start Date:</label>
+  <input type="date" id="start" name="startdate"><br>
+<label for="enddate">End Date:</label>
+    <input type="date" id="end" name="enddate"><br>
+<button type="submit" class="dater" onclick="myFunction()">Submit</button>
+</form>
+<!--transaction Searching by Date-->
+
+<table style="width:50%" class="transreport"  id="myDIV">
+    <tr>
+        <th>Book Name</th>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+        <th>Member Name</th>
+    </tr>
+{% for key in rep %}
+<tr><td>{{key.book_name}} </td><td>{{key.borrow_date}} </td><td>{{key.return_date}} </td><td>{{key.member_name}}</td></tr>
+{% endfor %}
+</table>
+
+<!--Searching by books and Author-->
+{% for key in searchop %}
+<p>{{key}} : {{searchop[key]}}</p>
+{% endfor  %}
+<!--Invalid search-->
+<p>{{searchin}}</p>
+<!--Popular search-->
+{% for k in popular%}
+<p>{{k}} : {{popular[k]}}</p>
+{% endfor %}
+<!--Highest payer-->
+{% for k in msg%}
+<p>{{k}} : {{msg[k]}}</p>
+{% endfor %}
+{% endblock %}
+<script>
+function myFunction() {
+  document.getElementById("myDIV").style.visibility = "visible";
+}
+</script>
+</body>
+</html>
